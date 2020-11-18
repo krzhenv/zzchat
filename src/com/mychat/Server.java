@@ -1,7 +1,7 @@
 package com.mychat;
 
 
-import com.util.DBHelper;
+
 import com.util.JDBCUtils;
 
 import java.awt.event.*;
@@ -220,7 +220,7 @@ public class Server {
                     clientInputStr = input.readLine();
                     Log("Server："+clientInputStr);
 
-                    conn = DBHelper.getConnection();
+                    conn = JDBCUtils.getConnection();
                     String sql = "insert into tb_chatcontent values(null,'" + clientInputStr + "')";
                     stmt = conn.prepareStatement(sql);
                     int i = stmt.executeUpdate();
@@ -229,12 +229,7 @@ public class Server {
                     } else {
                         System.out.println("添加失败");
                     }
-                    if (stmt != null) {
-                            stmt.close();
-                    }
-                    if (conn != null) {
-                            conn.close();
-                    }
+                    JDBCUtils.close(stmt,conn);
 
                     //6.6.2按信息头部分类处理
                     Tokenizer tokens = new Tokenizer(clientInputStr,"@");

@@ -1,6 +1,8 @@
 package com.mychat;
 
-import com.util.DBHelper;
+
+
+import com.util.JDBCUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -162,7 +164,7 @@ public class Client {
                     //readline会产生死锁，如果没有下一条消息则继续等待
                     //正是因为死锁，才要新建一个客户端线程
                     message = input.readLine();
-                    conn = DBHelper.getConnection();
+                    conn = JDBCUtils.getConnection();
                     String sql = "insert into tb_chatcontent values(null,'" + message + "')";
                     stmt = conn.prepareStatement(sql);
                     int i = stmt.executeUpdate();
@@ -171,12 +173,13 @@ public class Client {
                     } else {
                         System.out.println("添加失败");
                     }
-                    if (stmt != null) {
-                        stmt.close();
-                    }
-                    if (conn != null) {
-                        conn.close();
-                    }
+//                    if (stmt != null) {
+//                        stmt.close();
+//                    }
+//                    if (conn != null) {
+//                        conn.close();
+//                    }
+                    JDBCUtils.close(stmt,conn);
 
                     Tokenizer tokens = new Tokenizer(message, "@");//对原有消息进行分割
                     String MessageType = tokens.nextToken();
